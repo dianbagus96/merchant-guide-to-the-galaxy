@@ -1,5 +1,4 @@
 require 'galaxy'
-require 'byebug'
 
 describe Galaxy do
   describe '#add_unit' do
