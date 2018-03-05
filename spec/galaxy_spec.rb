@@ -1,4 +1,5 @@
 require 'galaxy'
+require 'byebug'
 
 describe Galaxy do
   describe '#add_unit' do
@@ -17,6 +18,50 @@ describe Galaxy do
       galaxy.add_unit(name: 'galactic', roman_equivalent: 'M')
 
       expect(galaxy.units).to eq('galactic' => 'M')
+    end
+  end
+
+  describe '#value_of' do
+    it 'returns the numeric value of the given combination of units' do
+      roman = class_double('Roman')
+
+      galaxy = described_class.new(roman)
+
+      units = {
+        'ping' => 'X',
+        'pong' => 'M',
+        'tar' => 'V'
+      }
+
+      allow(galaxy)
+        .to receive(:units)
+        .and_return(units)
+
+      expect(roman)
+        .to receive(:to_i)
+        .with('XMV')
+
+      galaxy.value_of(['ping', 'pong', 'tar'])
+    end
+
+    it 'ignores inexistent units' do
+      roman = class_double('Roman')
+      galaxy = described_class.new(roman)
+
+      units = {
+        'ping' => 'X',
+        'pong' => 'M'
+      }
+
+      allow(galaxy)
+        .to receive(:units)
+        .and_return(units)
+
+      expect(roman)
+        .to receive(:to_i)
+        .with('XM')
+
+      galaxy.value_of(['ping', 'pong', 'glob', 'tar'])
     end
   end
 end
