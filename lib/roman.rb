@@ -1,5 +1,5 @@
 class Roman
-  ARABICS = {
+  MAPPING = {
     'M' => 1000,
     'CM' => 900,
     'D' => 500,
@@ -17,20 +17,12 @@ class Roman
 
   def self.to_i(roman)
     result = 0
-    chars = roman.chars
 
-    while !chars.empty?
-      digit = chars[0..1]
-      if ARABICS[digit.join]
-        arabic = ARABICS[digit.join]
-        chars.shift 2
-      else
-        digit = digit[0]
-        arabic = ARABICS[digit]
-        chars.shift
+    MAPPING.keys.each do |roman_value|
+      while roman.start_with?(roman_value)
+        roman = roman.slice(roman_value.size, roman.size)
+        result += MAPPING[roman_value]
       end
-
-      result += arabic
     end
 
     result
