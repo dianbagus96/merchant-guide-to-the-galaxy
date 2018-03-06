@@ -3,12 +3,15 @@ require 'tempfile'
 
 describe InputProcessor do
   describe '#process_line' do
+    # Suppress outputs to $stdout on all specs. Specs testing the output results
+    # will remap $stdout directly so it can be properly tested
     before do
       tempfile = Tempfile.new('stdout')
       @original_stdout = $stdout
       $stdout = tempfile
     end
 
+    # restore original $stdout after specs
     after do
       $stdout = @original_stdout
     end
@@ -16,21 +19,29 @@ describe InputProcessor do
     it 'adds galactical units' do
       line = 'glob is I'
 
-      expect_any_instance_of(Galaxy)
+      galaxy = instance_double('Galaxy')
+
+      expect(galaxy)
         .to receive(:add_unit)
         .with(name: 'glob', roman_equivalent: 'I')
 
-      described_class.new.process_line line
+      processor = described_class.new(galaxy: galaxy, metal: double)
+
+      processor.process_line line
     end
 
     it 'adds metal elements' do
       line = 'glob prok Silver is 48 Credits'
 
-      expect_any_instance_of(Metal)
+      metal = instance_double('Metal')
+
+      expect(metal)
         .to receive(:add_element)
         .with(galactic_units: ['glob', 'prok'], name: 'Silver', credits: '48')
 
-      described_class.new.process_line line
+      processor = described_class.new(galaxy: double, metal: metal)
+
+      processor.process_line line
     end
 
     it 'returns a message if the line could not be parsed correctly' do
@@ -40,7 +51,8 @@ describe InputProcessor do
       original_stdout = $stdout
       $stdout = Tempfile.new('stdout')
 
-      described_class.new.process_line line
+      processor = described_class.new(galaxy: double, metal: double)
+      processor.process_line line
 
       $stdout.rewind
       expect($stdout.read.strip).to eq described_class::ERROR_MSG
@@ -53,25 +65,27 @@ describe InputProcessor do
       it 'calls Galaxy#value_of with the right arguments' do
         line = 'how much is pish tegj ?'
 
-        expect_any_instance_of(Galaxy)
+        galaxy = instance_double('Galaxy')
+
+        expect(galaxy)
           .to receive(:value_of)
           .with(['pish', 'tegj'])
 
-        described_class.new.process_line line
+        processor = described_class.new(galaxy: galaxy, metal: double)
+        processor.process_line line
       end
 
       it 'prints the correct text' do
         line = 'how much is pish tegj ?'
 
-        allow_any_instance_of(Galaxy)
-          .to receive(:value_of)
-          .and_return(8)
+        galaxy = instance_double('Galaxy', value_of: 8)
 
         # remap STDOUT to make sure the correct content is printed
         original_stdout = $stdout
         $stdout = Tempfile.new('stdout')
 
-        described_class.new.process_line line
+        processor = described_class.new(galaxy: galaxy, metal: double)
+        processor.process_line line
 
         $stdout.rewind
         expect($stdout.read.strip).to eq 'pish tegj is 8'
@@ -85,25 +99,26 @@ describe InputProcessor do
       it 'calls Metal#convert with the right arguments' do
         line = 'how many Credits is tar bar Mercury'
 
-        expect_any_instance_of(Metal)
+        metal = instance_double('Metal')
+
+        expect(metal)
           .to receive(:convert)
           .with(galactic_units: ['tar', 'bar'], element: 'Mercury')
 
-        described_class.new.process_line line
+        processor = described_class.new(metal: metal, galaxy: double)
+        processor.process_line line
       end
 
       it 'prints the correct text' do
         line = 'how many Credits is tar bar Mercury'
-
-        allow_any_instance_of(Metal)
-          .to receive(:convert)
-          .and_return(961)
+        metal = instance_double('Metal', convert: 961)
 
         # remap STDOUT to make sure the correct content is printed
         original_stdout = $stdout
         $stdout = Tempfile.new('stdout')
 
-        described_class.new.process_line line
+        processor = described_class.new(metal: metal, galaxy: double)
+        processor.process_line line
 
         $stdout.rewind
         expect($stdout.read.strip).to eq 'tar bar Mercury is 961 Credits'

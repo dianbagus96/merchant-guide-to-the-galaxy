@@ -1,14 +1,11 @@
-require './lib/galaxy'
-require './lib/metal'
-
 class InputProcessor
   attr_reader :galaxy, :metal
 
   ERROR_MSG = 'I have no idea what you are talking about'.freeze
 
-  def initialize
-    @galaxy = Galaxy.new
-    @metal = Metal.new(@galaxy)
+  def initialize(galaxy:, metal:)
+    @galaxy = galaxy
+    @metal = metal
   end
 
   def process_line(line)
