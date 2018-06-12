@@ -80,6 +80,13 @@ glob prok Iron is 782 Credits
 
 I have no idea what you are talking about
 
+#### Roman numeral validation
+It will output an error message when the resulting Roman numeral is invalid.
+
+Example:
+
+`how much is pish pish pish pish pish ?` will result in: `That's not even a real
+unit!`
 
 ## Architecture
 
