@@ -45,7 +45,7 @@ describe Roman do
     end
   end
 
-  context 'with an invalid numeral' do
+  context 'an invalid numeral' do
     it 'should return zero' do
       roman = "IIII"
 

@@ -26,6 +26,7 @@ class InputProcessor
 
   private
 
+  # TODO: extract to another class
   def galactic_conversion(galactic_units:)
     value = galaxy.value_of(galactic_units.split)
 
@@ -36,6 +37,7 @@ class InputProcessor
     end
   end
 
+  # TODO: extract to another class
   def metal_conversion(galactic_units:, element:)
     credits = metal.convert(galactic_units: galactic_units.split,
                             element: element)
