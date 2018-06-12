@@ -1,5 +1,7 @@
 [![CircleCI](https://circleci.com/gh/feliperoveran/merchant-guide-to-the-galaxy/tree/master.svg?style=shield)](https://circleci.com/gh/feliperoveran/merchant-guide-to-the-galaxy/tree/master)
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/6b8286f59cf1a43bf0d5/maintainability)](https://codeclimate.com/github/feliperoveran/merchant-guide-to-the-galaxy/maintainability)
+
 # Merchant's Guide to the Galaxy
 
 Ruby solution to Merchant's Guide to the Galaxy problem
