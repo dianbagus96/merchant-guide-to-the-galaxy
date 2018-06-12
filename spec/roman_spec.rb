@@ -43,11 +43,13 @@ describe Roman do
 
       expect(described_class.to_i(roman)).to eq 2009
     end
+  end
 
-    it 'ignores invalid inputs and considers only the valid section' do
-      roman = 'XIXLLMC'
+  context 'with an invalid numeral' do
+    it 'should return zero' do
+      roman = "IIII"
 
-      expect(described_class.to_i(roman)).to eq 19
+      expect(described_class.to_i(roman)).to be_zero
     end
   end
 end

@@ -1,4 +1,6 @@
 class Roman
+  VALID_REGEX = /^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/
+
   MAPPING = {
     'M' => 1000,
     'CM' => 900,
@@ -16,6 +18,8 @@ class Roman
   }.freeze
 
   def self.to_i(roman)
+    return 0 unless roman.match? VALID_REGEX
+
     result = 0
 
     MAPPING.keys.each do |roman_value|
