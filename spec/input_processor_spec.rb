@@ -3,8 +3,7 @@ require 'tempfile'
 
 describe InputProcessor do
   describe '#process_line' do
-    # Suppress outputs to $stdout on all specs. Specs testing the output results
-    # will remap $stdout directly so it can be properly tested
+    # Suppress outputs to $stdout on all specs.
     before do
       tempfile = Tempfile.new('stdout')
       @original_stdout = $stdout
@@ -47,18 +46,11 @@ describe InputProcessor do
     it 'returns a message if the line could not be parsed correctly' do
       line = 'I wonder how long it would take me to walk to the sun'
 
-      # remap STDOUT to make sure the correct content is printed
-      original_stdout = $stdout
-      $stdout = Tempfile.new('stdout')
-
       processor = described_class.new(galaxy: double, metal: double)
-      processor.process_line line
 
-      $stdout.rewind
-      expect($stdout.read.strip).to eq described_class::ERROR_MSG
-
-      # restore original STDOUT
-      $stdout = original_stdout
+      expect {
+        processor.process_line line
+      }.to output(/#{described_class::ERROR_MSG}/).to_stdout
     end
 
     context 'calculating intergalactic units value' do
@@ -80,18 +72,11 @@ describe InputProcessor do
 
         galaxy = instance_double('Galaxy', value_of: 8)
 
-        # remap STDOUT to make sure the correct content is printed
-        original_stdout = $stdout
-        $stdout = Tempfile.new('stdout')
-
         processor = described_class.new(galaxy: galaxy, metal: double)
-        processor.process_line line
 
-        $stdout.rewind
-        expect($stdout.read.strip).to eq 'pish tegj is 8'
-
-        # restore original STDOUT
-        $stdout = original_stdout
+        expect {
+          processor.process_line line
+        }.to output(/pish tegj is 8/).to_stdout
       end
     end
 
@@ -113,18 +98,41 @@ describe InputProcessor do
         line = 'how many Credits is tar bar Mercury'
         metal = instance_double('Metal', convert: 961)
 
+        processor = described_class.new(metal: metal, galaxy: double)
+
+        expect {
+          processor.process_line line
+        }.to output(/tar bar Mercury is 961 Credits/).to_stdout
+      end
+    end
+
+    context 'when the roman equivalent of the galactic units is zero' do
+      it 'should return an invalid unit message' do
+        line = 'how much is glob glob glob glob ?'
+        galaxy = instance_double('Galaxy', value_of: 0)
+
         # remap STDOUT to make sure the correct content is printed
         original_stdout = $stdout
         $stdout = Tempfile.new('stdout')
 
-        processor = described_class.new(metal: metal, galaxy: double)
-        processor.process_line line
+        processor = described_class.new(galaxy: galaxy, metal: double)
 
-        $stdout.rewind
-        expect($stdout.read.strip).to eq 'tar bar Mercury is 961 Credits'
+        expect {
+          processor.process_line line
+        }.to output(/#{described_class::INVALID_UNIT_MSG}/).to_stdout
+      end
+    end
 
-        # restore original STDOUT
-        $stdout = original_stdout
+    context 'when the roman equivalent of the metal units is zero' do
+      it 'should return an invalid unit message' do
+        line = 'how many Credits is tar bar Mercury'
+        metal = instance_double('Metal', convert: 0)
+
+        processor = described_class.new(galaxy: double, metal: metal)
+
+        expect {
+          processor.process_line line
+        }.to output(/#{described_class::INVALID_UNIT_MSG}/).to_stdout
       end
     end
   end
