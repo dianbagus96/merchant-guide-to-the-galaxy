@@ -21,7 +21,7 @@ describe Galaxy do
   end
 
   describe '#value_of' do
-    it 'returns the numeric value of the given combination of units' do
+    it 'calls Roman.to_i with the roman equivalent of the galaxy units' do
       roman = class_double('Roman')
 
       galaxy = described_class.new(roman)
