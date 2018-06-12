@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/feliperoveran/merchant-guide-to-the-galaxy/tree/master.svg?style=shield)](https://circleci.com/gh/feliperoveran/merchant-guide-to-the-galaxy/tree/master)
+
 # Merchant's Guide to the Galaxy
 
 Ruby solution to Merchant's Guide to the Galaxy problem
