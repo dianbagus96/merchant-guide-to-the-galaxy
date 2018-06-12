@@ -25,9 +25,8 @@ describe 'Merchant\'s Guide to the Galaxy' do
       command = 'ruby merchant_guide_to_the_galaxy.rb spec/fixtures/test_input.txt'
       expected_output = File.open('spec/fixtures/test_output.txt').read
 
-      stdout, stderr, _ = Open3.capture3(command)
+      stdout, _, _ = Open3.capture3(command)
 
-      expect(stderr).to be_empty
       expect(stdout).to eq expected_output
     end
 
